@@ -1,0 +1,159 @@
+version: '3.8'
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - ./prowlarr/config:/config
+      - ./prowlarr/data:/data # Simplifié pour tous les services
+    networks:
+      - internal
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+  
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=info
+      - TZ=Europe/London
+    networks:
+      - internal
+    ports:
+      - "8191:8191"
+    restart: unless-stopped
+  
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - ./radarr/config:/config
+      - ./radarr/data:/data
+      - ./media/movies:/media/movies
+      - ./downloads:/downloads
+    networks:
+      - internal
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+  
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - ./sonarr/config:/config
+      - ./sonarr/data:/data
+      - ./media/tv:/media/tv
+      - ./downloads:/downloads
+    networks:
+      - internal
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+  
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - ./qbittorrent/config:/config
+      - ./downloads:/downloads
+      - ./media/movies:/media/movies
+      - ./media/tv:/media/tv
+    networks:
+      - internal
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Europe/Paris
+    networks:
+      - internal
+    ports:
+      - 5055:5055
+    volumes:
+      - ./jellyseerr/config:/app/config
+    restart: unless-stopped
+
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    restart: unless-stopped
+    group_add:
+      - "122"
+    networks:
+      - internal
+    ports:
+      - 8096:8096
+      - 8920:8920
+      - 1900:1900
+    environment:
+      - VERSION=latest
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - ./jellyfin/config:/config
+      - ./jellyfin/cache:/cahe
+      - ./media/movies:/media/movies
+      - ./media/tv:/media/tv
+
+  wizarr:
+      container_name: wizarr
+      image: ghcr.io/wizarrrr/wizarr:latest
+      networks:
+        - internal
+      ports:
+        - 5690:5690
+      volumes:
+        - ./wizarr/database:/data/database
+
+  requestrr:
+    container_name: requestrr
+    image: lscr.io/linuxserver/requestrr:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    networks:
+      - internal
+    ports:
+      - 4545:4545
+    volumes:
+      - ./requestrr/config:/config
+    restart: unless-stopped
+
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    networks:
+      - internal
+    command: tunnel --no-autoupdate run --token $CLOUDFLARE_TUNNEL_TOKEN
+
+networks:
+  internal:
+    driver: bridge
