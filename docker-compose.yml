@@ -84,6 +84,26 @@ services:
       - 6881:6881/udp
     restart: unless-stopped
 
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - ./deluge/config:/config
+      - ./downloads:/downloads
+      - ./media/movies:/media/movies
+      - ./media/tv:/media/tv
+    networks:
+      - internal
+    ports:
+      - 8112:8112
+      - 58846:58846
+      - 58846:58846/udp
+    restart: unless-stopped
+
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
