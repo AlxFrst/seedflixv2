@@ -166,13 +166,20 @@ services:
       - ./requestrr/config:/config
     restart: unless-stopped
 
-
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
     networks:
       - internal
     command: tunnel --no-autoupdate run --token $CLOUDFLARE_TUNNEL_TOKEN
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --cleanup
+    restart: unless-stopped
 
 networks:
   internal:
