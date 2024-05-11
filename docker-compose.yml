@@ -166,8 +166,8 @@ services:
       - PLEX_CLAIM=$PLEX_CLAIM
     volumes:
       - ./plex/config:/config
-      - ./plex/tvseries:/tv
-      - ./plex/movies:/movies
+      - ./media/movies:/media/movies
+      - ./media/tv:/media/tv
     restart: unless-stopped
 
   wizarr:
