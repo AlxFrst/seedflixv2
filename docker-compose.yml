@@ -192,6 +192,22 @@ services:
     command: --cleanup
     restart: unless-stopped
 
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Paris
+    volumes:
+      - ./lidarr/config:/config
+      - ./lidarr/data:/data
+      - ./media/music:/media/music
+      - ./downloads:/downloads
+    ports:
+      - 8686:8686
+    restart: unless-stopped
+
   # Joal for torrent
   joal:
     image: anthonyraymond/joal:latest

@@ -12,3 +12,4 @@ qbittorrent
 deluge
 joal/torrents/archived/*.torrent
 joal/torrents/*.torrent
+lidarr
