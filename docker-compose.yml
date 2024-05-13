@@ -80,33 +80,13 @@ services:
       - ./downloads:/downloads
       - ./media/movies:/media/movies
       - ./media/tv:/media/tv
+      - ./media/music:/media/music
     networks:
       - internal
     ports:
       - 8080:8080
       - 6881:6881
       - 6881:6881/udp
-    restart: unless-stopped
-
-  # Deluge for torrent
-  deluge:
-    image: lscr.io/linuxserver/deluge:latest
-    container_name: deluge
-    environment:
-      - PUID=0
-      - PGID=0
-      - TZ=Europe/Paris
-    volumes:
-      - ./deluge/config:/config
-      - ./downloads:/downloads
-      - ./media/movies:/media/movies
-      - ./media/tv:/media/tv
-    networks:
-      - internal
-    ports:
-      - 8112:8112
-      - 58846:58846
-      - 58846:58846/udp
     restart: unless-stopped
   
   # Jellyseerr for media request
@@ -147,6 +127,7 @@ services:
       - ./jellyfin/cache:/cahe
       - ./media/movies:/media/movies
       - ./media/tv:/media/tv
+      - ./media/music:/media/music
 
   # Wizarr for invite management
   wizarr:
