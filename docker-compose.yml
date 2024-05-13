@@ -192,6 +192,7 @@ services:
     command: --cleanup
     restart: unless-stopped
 
+  # Lidarr for music
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
@@ -206,6 +207,8 @@ services:
       - ./downloads:/downloads
     ports:
       - 8686:8686
+    networks:
+      - internal
     restart: unless-stopped
 
   # Joal for torrent
