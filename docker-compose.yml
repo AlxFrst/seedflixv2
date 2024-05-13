@@ -1,4 +1,5 @@
 services:
+  # Prowlarr for indexers sync
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
@@ -15,6 +16,7 @@ services:
       - 9696:9696
     restart: unless-stopped
   
+  # FlareSolverr for Cloudflare
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     container_name: flaresolverr
@@ -27,6 +29,7 @@ services:
       - "8191:8191"
     restart: unless-stopped
   
+  # Radarr for movies
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
@@ -45,6 +48,7 @@ services:
       - 7878:7878
     restart: unless-stopped
   
+  # Sonarr for TV shows
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
@@ -63,6 +67,7 @@ services:
       - 8989:8989
     restart: unless-stopped
   
+  # qBittorrent for torrent
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
@@ -83,6 +88,7 @@ services:
       - 6881:6881/udp
     restart: unless-stopped
 
+  # Deluge for torrent
   deluge:
     image: lscr.io/linuxserver/deluge:latest
     container_name: deluge
@@ -102,7 +108,8 @@ services:
       - 58846:58846
       - 58846:58846/udp
     restart: unless-stopped
-
+  
+  # Jellyseerr for media request
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
@@ -117,6 +124,7 @@ services:
       - ./jellyseerr/config:/app/config
     restart: unless-stopped
 
+  # Jellyfin for media server
   jellyfin:
     image: jellyfin/jellyfin
     container_name: jellyfin
@@ -140,6 +148,7 @@ services:
       - ./media/movies:/media/movies
       - ./media/tv:/media/tv
 
+  # Wizarr for invite management
   wizarr:
       container_name: wizarr
       image: ghcr.io/wizarrrr/wizarr:latest
@@ -150,6 +159,7 @@ services:
       volumes:
         - ./wizarr/database:/data/database
 
+  # Requestrr for Discord
   requestrr:
     container_name: requestrr
     image: thomst08/requestrr
@@ -165,6 +175,7 @@ services:
       - ./requestrr/config:/root/config
     restart: unless-stopped
 
+  # Cloudflare Tunnel for remote access
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
@@ -172,6 +183,7 @@ services:
       - internal
     command: tunnel --no-autoupdate run --token $CLOUDFLARE_TUNNEL_TOKEN
 
+  # Watchtower for auto update
   watchtower:
     container_name: watchtower
     image: containrrr/watchtower:latest
@@ -179,6 +191,18 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --cleanup
     restart: unless-stopped
+
+  # Joal for torrent
+  joal:
+    image: anthonyraymond/joal:latest
+    container_name: joal
+    restart: unless-stopped
+    volumes:
+      - ./joal:/data
+    ports:
+      - 9001:9001
+    command: ["--joal-conf=/data", "--spring.main.web-environment=true", "--server.port=9001", "--joal.ui.path.prefix=admin", "--joal.ui.secret-token=sqiydgqsyugfd@qsdui"]
+
 
 networks:
   internal:
