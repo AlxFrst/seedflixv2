@@ -224,6 +224,14 @@ services:
       - 9001:9001
     command: ["--joal-conf=/data", "--spring.main.web-environment=true", "--server.port=9001", "--joal.ui.path.prefix=admin", "--joal.ui.secret-token=sqiydgqsyugfd@qsdui"]
 
+  uptime-kuma:
+    restart: always
+    ports:
+        - 3001:3001
+    volumes:
+        - ./uptime-kuma:/app/data
+    container_name: uptime-kuma
+    image: louislam/uptime-kuma:1
 
 networks:
   internal:
